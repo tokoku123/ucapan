@@ -3,46 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selamat Ulang Tahun!</title>
-    <style>
-        body { margin: 0; padding: 0; background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); font-family: 'Arial', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; overflow: hidden; }
-        .container { background: rgba(255, 255, 255, 0.95); padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-width: 400px; width: 85%; }
-        h1 { color: #ff6b6b; display: none; margin-top: 0;}
-        p { color: #555; font-size: 18px; line-height: 1.6; display: none; }
-        .kado { font-size: 80px; cursor: pointer; transition: transform 0.3s; margin: 20px 0; }
-        .kado:hover { transform: scale(1.1) rotate(5deg); }
-        .kado.opened { display: none; }
-        .instruksi { color: #888; font-size: 14px; margin-top: 10px; font-weight: bold;}
-    </style>
+    <title>Selamat Ulang Tahun! 🎉</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Sacramento&display=swap" rel="stylesheet">
+    <!-- Confetti JS -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            position: relative;
+            transform: scale(0.9);
+            animation: popup 0.5s forwards ease-out;
+        }
+        @keyframes popup {
+            to { transform: scale(1); }
+        }
+        .gift-box {
+            font-size: 90px;
+            cursor: pointer;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+            margin: 20px 0;
+            animation: bounce 1.5s infinite alternate;
+        }
+        .gift-box:hover {
+            transform: scale(1.15) rotate(8deg);
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-15px); }
+        }
+        .hint {
+            color: #6c757d;
+            font-size: 15px;
+            font-weight: 600;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .message-content {
+            display: none;
+            animation: fadeIn 0.8s ease-in forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1.title {
+            font-family: 'Sacramento', cursive;
+            font-size: 45px;
+            color: #ff4757;
+            margin-bottom: 10px;
+        }
+        .name {
+            color: #2ed573;
+            font-weight: 700;
+        }
+        p.text {
+            color: #4b6584;
+            font-size: 16px;
+            line-height: 1.7;
+            margin: 15px 0 25px;
+        }
+        .btn-replay {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(255, 71, 87, 0.3);
+            transition: all 0.3s;
+        }
+        .btn-replay:hover {
+            background: #ff6b81;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="kado" id="kado">🎁</div>
-        <div class="instruksi" id="instruksi">Klik kado ini!</div>
-        
-        <!-- UBAH NAMA DAN PESAN DI SINI -->
-        <h1 id="judul">Selamat Ulang Tahun! 🎉</h1>
-        <p id="pesan">
-            Selamat ulang tahun, <b>Bestie!</b><br><br>
-            Semoga panjang umur, sehat selalu, dan semua impianmu tahun ini terwujud. Bahagia terus ya! 🎂✨
-        </p>
+
+    <div class="card">
+        <!-- Tampilan Sebelum Kado Dibuka -->
+        <div id="pre-open">
+            <div class="gift-box" id="giftBox">🎁</div>
+            <p class="hint">Tekan kado untuk membuka kejutan!</p>
+        </div>
+
+        <!-- Tampilan Setelah Kado Dibuka -->
+        <div class="message-content" id="postOpen">
+            <h1 class="title">Happy Birthday! 🎂</h1>
+            <p class="text">
+                Selamat Ulang Tahun, <span class="name">Nama Temanmu</span>! 🎉<br><br>
+                Semoga panjang umur, sehat selalu, dipanjangkan rezekinya, dan semua impian serta cita-citamu tahun ini bisa terwujud! 🎈✨
+            </p>
+            <button class="btn-replay" onclick="triggerConfetti()">Lemparkan Bunga Warna-Warni 🎊</button>
+        </div>
     </div>
 
     <script>
-        document.getElementById('kado').addEventListener('click', function() {
-            this.classList.add('opened');
-            document.getElementById('instruksi').style.display = 'none';
-            document.getElementById('judul').style.display = 'block';
-            document.getElementById('pesan').style.display = 'block';
-            
-            var end = Date.now() + (3 * 1000);
-            (function frame() {
-                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'] });
-                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'] });
-                if (Date.now() < end) requestAnimationFrame(frame);
-            }());
+        const giftBox = document.getElementById('giftBox');
+        const preOpen = document.getElementById('pre-open');
+        const postOpen = document.getElementById('postOpen');
+
+        giftBox.addEventListener('click', () => {
+            // Sembunyikan kado
+            preOpen.style.display = 'none';
+            // Tampilkan pesan
+            postOpen.style.display = 'block';
+            // Jalankan efek kertas warna-warni
+            triggerConfetti();
         });
+
+        function triggerConfetti() {
+            var count = 200;
+            var defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
+            fire(0.2, {
+                spread: 60,
+            });
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2
+            });
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        }
     </script>
 </body>
 </html>
